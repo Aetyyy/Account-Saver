@@ -52,7 +52,7 @@ export default function FormRegister() {
         <input
           type="text"
           name="name"
-          className="bg-slate-300 border border-[#CED4DA] hover:border-[#74C0FC] focus:border-[#74C0FC] outline-none transition-colors duration-300 text-[#6C757D] rounded-lg w-full p-2.5"
+          className="bg-white border border-form-border-dark hover:border-form-border-focus-dark focus:border-form-border-focus-dark focus:outline-none transition-colors duration-300 rounded-lg w-full p-2.5"
           placeholder="Enter your name"
         />
         <div aria-live="polite" aria-atomic="true">
@@ -71,7 +71,7 @@ export default function FormRegister() {
         <input
           type="email"
           name="email"
-          className="bg-slate-300 border border-[#CED4DA] hover:border-[#74C0FC] placeholder:text-white focus:border-[#74C0FC] outline-none transition-colors duration-300 text-[#6C757D] rounded-lg w-full p-2.5"
+          className="bg-white border border-form-border-dark hover:border-form-border-focus-dark focus:border-form-border-focus-dark focus:outline-none transition-colors duration-300 rounded-lg w-full p-2.5"
           placeholder="Enter your email"
         />
         <div aria-live="polite" aria-atomic="true">
@@ -106,7 +106,7 @@ export default function FormRegister() {
             value={password}
             onChange={handlePasswordChange}
             name="password"
-            className="bg-slate-300 border border-[#CED4DA] hover:border-[#74C0FC] focus:border-[#74C0FC] outline-none transition-colors duration-300 text-[#6C757D] rounded-lg w-full p-2.5"
+            className="bg-white border border-form-border-dark hover:border-form-border-focus-dark focus:border-form-border-focus-dark focus:outline-none transition-colors duration-300 rounded-lg w-full p-2.5"
             placeholder="Enter your password"
           />
           <button
@@ -165,7 +165,7 @@ export default function FormRegister() {
             value={confirmPassword}
             onChange={handleConfirmPasswordChange}
             name="ConfirmPassword"
-            className="bg-slate-300 border border-[#CED4DA] hover:border-[#74C0FC] focus:border-[#74C0FC] outline-none transition-colors duration-300 text-[#6C757D] rounded-lg w-full p-2.5"
+            className="bg-white border border-form-border-dark hover:border-form-border-focus-dark focus:border-form-border-focus-dark focus:outline-none transition-colors duration-300 rounded-lg w-full p-2.5"
             placeholder="Enter your confirm password"
           />
           <button

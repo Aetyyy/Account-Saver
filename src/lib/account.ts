@@ -1,55 +1,107 @@
+"use server";
 /**
  * CRUD ACCOUNT
  *
  * Created By Avaa & Aethyy
  */
 
-"use server";
-
-import { accountStorage } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { encryptPass } from "@/lib/utils";
 import { auth } from "@/auth";
-import { inputAccountSchema } from "@/lib/zod";
+import { inputAccountSchema, updateAccountSchema } from "@/lib/zod";
 import { redirect } from "next/navigation";
 
 /**
- * Get Function
+ * Get Function by ID
  *
  * Created By Avaa & Aethyy
  */
-const getData = async () => {
+
+const getDataById = async (id: string) => {
+  const session = await auth();
+  if (!session) {
+    return {
+      message: "Anda harus login terlebih dahulu.",
+      status: 401,
+    };
+  }
+
+  const data = await prisma.accountStorage.findFirst({
+    where: {
+      id: id,
+      userid: session.user.id,
+      deletedat: null,
+    },
+    include: {
+      category: true,
+    },
+  });
+
+  if (!data) {
+    return {
+      message: "Data tidak ditemukan",
+      status: 404,
+    };
+  }
+
+  const result = {
+    ...data,
+    categoryname: data.category?.name || null,
+  };
+
+  return {
+    message: "Data ditemukan",
+    status: 200,
+    data: result,
+  };
+};
+
+/**
+ * Get Function with Category
+ *
+ * Created By Avaa & Aethyy
+ */
+const getData = async (id?: string) => {
   const session = await auth();
   if (!session) {
     return {
       message: "anda harus login terlebih dahulu.",
     };
   }
-  let data: any = await prisma.accountStorage.findMany({
+
+  let data = await prisma.accountStorage.findMany({
     where: {
       userid: session.user.id,
+      deletedat: null,
     },
     include: {
       category: true,
     },
   });
 
-  await prisma.accountStorage.findFirst({
-    where: { userid: session.user.id },
-    include: {
-      category: true,
+  data = data.map((acc) => ({
+    ...acc,
+    category: acc.category && {
+      id: acc.category.id,
+      description: acc.category.description,
+      userid: acc.category.userid,
+      createdat: acc.category.createdat,
+      updatedat: acc.category.updatedat,
+      deletedat: acc.category.deletedat,
+      name: acc.category.name,
     },
-  });
+  }));
 
-  if (data) {
+  if (data.length > 0) {
     return {
-      message: "data ditemukan.",
+      message: "Founding data",
       status: true,
       data,
     };
   } else {
     return {
-      message: "data tidak ditemukan.",
+      message: "Data can't be found",
       status: false,
     };
   }
@@ -73,34 +125,51 @@ const insertData = async (prevState: any, formData: FormData) => {
     };
   }
 
-  const { title, account, password, description } = validatedFields.data;
+  const { title, account, password, description, category } =
+    validatedFields.data;
   const encryptingPass = encryptPass(password);
 
   try {
-    const createAccount = await prisma.$transaction(async (prisma) => {
-      if (!session.user.id) {
-        throw new Error("User ID is required");
-      }
-      return await prisma.accountStorage.create({
-        data: {
-          title,
-          account,
-          password: encryptingPass,
-          description,
-          userid: session.user.id,
-          categoryid: null,
-        },
-      });
+    if (!session.user.id) {
+      throw new Error("User ID is required");
+    }
+    const createAccount = await prisma.accountStorage.create({
+      data: {
+        title,
+        account,
+        password: encryptingPass,
+        description,
+        userid: session.user.id,
+        categoryid: category || null,
+      },
     });
 
     if (createAccount) {
       console.log("Data berhasil dibuat:", createAccount);
     }
   } catch (error: any) {
-    console.error("Error:", error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // Tangani error Prisma yang diketahui
+      if (error.code === "P2003") {
+        // Foreign key constraint violation
+        return {
+          message: "Category ID tidak valid atau tidak ditemukan.",
+          status: false,
+        };
+      }
+    } else if (error instanceof Prisma.PrismaClientValidationError) {
+      // Tangani error validasi Prisma
+      return {
+        message: "Data yang dikirimkan tidak valid.",
+        status: false,
+      };
+    }
+
+    // Error lainnya
+    console.error("Unexpected error:", error);
     return {
-      message: error.message,
-      status: false,
+      message: "Terjadi kesalahan yang tidak terduga.",
+      status: 500,
     };
   }
   redirect("/storage");
@@ -111,13 +180,22 @@ const insertData = async (prevState: any, formData: FormData) => {
  *
  * Created By Avaa & Aethyy
  */
-const updateData = async ({
-  id,
-  title,
-  account,
-  password,
-  categoryid,
-}: accountStorage) => {
+const updateData = async (prevState: any, formData: FormData) => {
+  const session = await auth();
+  if (!session) return null;
+  const validatedFields = updateAccountSchema.safeParse(
+    Object.fromEntries(formData.entries())
+  );
+
+  if (!validatedFields.success) {
+    return {
+      error: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const { title, account, password, description, category, id } =
+    validatedFields.data;
+
   try {
     const beforeUpdate = await prisma.accountStorage.findFirst({
       where: { id },
@@ -126,8 +204,9 @@ const updateData = async ({
       data: {
         title,
         account,
+        description,
         password: encryptPass(password),
-        categoryid,
+        categoryid: category || null,
       },
       where: {
         id,
@@ -158,7 +237,7 @@ const updateData = async ({
  *
  * Created By Avaa & Aethyy
  */
-const deleteData = async ({ id }: accountStorage) => {
+const deleteData = async ({ id }: { id: string }) => {
   try {
     const beforeDelete = await prisma.accountStorage.findFirst({
       where: { id },
@@ -190,4 +269,4 @@ const deleteData = async ({ id }: accountStorage) => {
   }
 };
 
-export { getData, insertData, updateData, deleteData };
+export { getDataById, getData, insertData, updateData, deleteData };

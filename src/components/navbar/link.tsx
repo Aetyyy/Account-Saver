@@ -1,36 +1,26 @@
-import Link from "next/link";
 import React from "react";
+import ActivePath from "@/components/navbar/path";
 
 export function PageLink({ session }: any) {
   return (
     <ul className="hidden md:flex items-center gap-4 mr-5 font-semibold text-navbar-text">
       <li>
-        <Link href={"/"} className="hover:text-navbar-hover-text">
-          Home
-        </Link>
+        <ActivePath href={"/"}>Home</ActivePath>
       </li>
       <li>
-        <Link href={"/about"} className="hover:text-navbar-hover-text">
-          About
-        </Link>
+        <ActivePath href={"/#about"}>About</ActivePath>
       </li>
       {session && (
         <>
           <li>
-            <Link href={"/dashboard"} className="hover:text-navbar-hover-text">
-              Dashboard
-            </Link>
+            <ActivePath href={"/storage"}>Account</ActivePath>
           </li>
           <li>
-            <Link href={"/storage"} className="hover:text-navbar-hover-text">
-              Account
-            </Link>
+            <ActivePath href={"/category"}>Category</ActivePath>
           </li>
           {session.user.role === "admin" ? (
             <li>
-              <Link href={"/user"} className="hover:text-navbar-hover-text">
-                User
-              </Link>
+              <ActivePath href={"/user"}>User</ActivePath>
             </li>
           ) : null}
         </>

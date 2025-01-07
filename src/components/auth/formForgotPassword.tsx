@@ -65,7 +65,6 @@ export default function FormForgotPassword() {
         allowEscapeKey: false,
         allowEnterKey: false,
       });
-      console.log(error);
     } finally {
       setIsSubmitting(false);
     }
@@ -76,14 +75,14 @@ export default function FormForgotPassword() {
       <div>
         <label
           htmlFor="email"
-          className="block mb-2 text-sm font-medium text-gray-900"
+          className="block mb-2 text-sm font-medium text-white"
         >
           Email
         </label>
         <input
           type="email"
           name="email"
-          className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg w-full p-2.5"
+          className="text-white bg-slate-700/90 border border-slate-600 hover:border-slate-800 focus:border-slate-800 focus:outline-none transition-colors duration-300 rounded-lg w-full p-2.5"
           placeholder="john.doe@me.com"
           required
         />

@@ -1,5 +1,7 @@
+"use server";
+
 /**
- * CRUD ACCOUNT
+ * CRUD CATEGORY
  *
  * Created By Avaa & Aethyy
  */
@@ -7,6 +9,7 @@
 import { category } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import { inputCategorySchema } from "@/lib/zod";
 
 /**
  * Get Function
@@ -21,26 +24,23 @@ const getData = async (id?: string) => {
     };
   }
 
-  let data: any = await prisma.category.findMany({
+  let data: category[] = await prisma.category.findMany({
     where: {
       userid: session.user.id,
+      deletedat: null,
     },
   });
 
-  if (id) {
-    data = await prisma.category.findFirst({ where: { id } });
-  }
-
-  if (data) {
+  if (data.length > 0) {
     return {
       message: "data ditemukan.",
-      status: true,
+      status: 200,
       data,
     };
   } else {
     return {
       message: "data tidak ditemukan.",
-      status: false,
+      status: 500,
     };
   }
 };
@@ -50,27 +50,43 @@ const getData = async (id?: string) => {
  *
  * Created By Avaa & Aethyy
  */
-const insertData = async ({ name, description, userid }: category) => {
+const insertData = async (_prevState: any, formData: FormData) => {
+  const session = await auth();
+  if (!session) return null;
+  const validatedFields = inputCategorySchema.safeParse(
+    Object.fromEntries(formData.entries())
+  );
+
+  if (!validatedFields.success) {
+    return {
+      error: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const { name, description } = validatedFields.data;
+
   try {
-    const newCategory = await prisma.category.create({
+    if (!session.user.id) {
+      throw new Error("User ID is required");
+    }
+    const createCategory = await prisma.category.create({
       data: {
         name,
         description,
-        userid,
-      } as category,
+        userid: session.user.id,
+      },
     });
-    if (newCategory.id) {
+
+    if (createCategory) {
       return {
-        message: "memek 1",
-      };
-    } else {
-      return {
-        message: "memek 2",
+        // message: "Success Create Category",
+        status: true,
       };
     }
-  } catch (e) {
+  } catch (e: any) {
     return {
-      message: "memek 3",
+      message: "Failed Create Category",
+      status: false,
     };
   }
 };
@@ -116,7 +132,7 @@ const updateData = async ({ id, name, description }: category) => {
  *
  * Created By Avaa & Aethyy
  */
-const deleteData = async ({ id }: category) => {
+const deleteData = async ({ id }: { id: string }) => {
   try {
     const beforeDelete = await prisma.category.findFirst({
       where: { id },

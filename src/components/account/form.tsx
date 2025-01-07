@@ -2,144 +2,114 @@
 import { insertData } from "@/lib/account";
 import { useFormState } from "react-dom";
 
-export default function Form({ session }: any) {
+export default function Form() {
   const [state, formAction] = useFormState(insertData, null);
 
   return (
-    <form
-      id="addForm"
-      action={formAction}
-      className="flex flex-col w-full gap-4"
-    >
-      {state?.message ? (
+    <form id="addForm" action={formAction} className="grid gap-4 w-full">
+      {state?.message && (
         <div
           className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-100"
           role="alert"
         >
           <span className="font-medium">{state?.message}</span>
         </div>
-      ) : null}
-      <div className="flex flex-row gap-8">
-        <div className="basis-1/2 flex flex-col gap-2">
-          <label htmlFor="" className="text-white">
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex flex-col">
+          <label htmlFor="title" className="text-white">
             Name
           </label>
           <input
             type="text"
             name="title"
-            className="w-full rounded-md px-2 py-2 focus:outline-none"
+            id="title"
+            className="w-full rounded-md px-2 py-2 focus:outline-none bg-slate-800 text-white"
           />
-          <div aria-live="polite" aria-atomic="true">
+          {state?.error?.title && (
             <span className="text-sm text-red-500 mt-2">
-              {state?.error && (
-                <div
-                  className="mb-4 text-sm text-red-500 rounded-lg"
-                  role="alert"
-                >
-                  {state?.error.title && (
-                    <div>
-                      {state?.error.title.map((msg, idx) => (
-                        <p key={idx}>{msg}</p>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
+              {state.error.title.join(", ")}
             </span>
-          </div>
+          )}
         </div>
-        <div className="basis-1/2 flex flex-col gap-2">
-          <label htmlFor="" className="text-white">
+
+        <div className="flex flex-col">
+          <label htmlFor="account" className="text-white">
             Account
           </label>
           <input
             type="text"
             name="account"
-            className="w-full rounded-md px-2 py-2 focus:outline-none"
+            id="account"
+            className="w-full rounded-md px-2 py-2 focus:outline-none bg-slate-800 text-white"
           />
-          <div aria-live="polite" aria-atomic="true">
+          {state?.error?.account && (
             <span className="text-sm text-red-500 mt-2">
-              {state?.error && (
-                <div
-                  className="mb-4 text-sm text-red-500 rounded-lg"
-                  role="alert"
-                >
-                  {state?.error.account && (
-                    <div>
-                      {state?.error.account.map((msg, idx) => (
-                        <p key={idx}>{msg}</p>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
+              {state.error.account.join(", ")}
             </span>
-          </div>
+          )}
         </div>
       </div>
-      <div className="flex flex-row gap-8">
-        <div className="basis-1/2 flex flex-col gap-2">
-          <label htmlFor="" className="text-white">
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex flex-col">
+          <label htmlFor="password" className="text-white">
             Password
           </label>
           <input
-            type="text"
+            type="password"
             name="password"
-            className="w-full rounded-md px-2 py-2 focus:outline-none"
+            id="password"
+            className="w-full rounded-md px-2 py-2 focus:outline-none bg-slate-800 text-white"
           />
-          <div aria-live="polite" aria-atomic="true">
+          {state?.error?.password && (
             <span className="text-sm text-red-500 mt-2">
-              {state?.error && (
-                <div
-                  className="mb-4 text-sm text-red-500 rounded-lg"
-                  role="alert"
-                >
-                  {state?.error.password && (
-                    <div>
-                      {state?.error.password.map((msg, idx) => (
-                        <p key={idx}>{msg}</p>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
+              {state.error.password.join(", ")}
             </span>
-          </div>
+          )}
         </div>
-        <div className="basis-1/2 flex flex-col gap-2">
-          <label htmlFor="" className="text-white">
-            Description
+
+        <div className="flex flex-col">
+          <label htmlFor="category" className="text-white">
+            Category
           </label>
-          <textarea
-            name="description"
-            rows={3}
-            className="w-full rounded-md px-2 py-2 focus:outline-none"
-          />
-          <div aria-live="polite" aria-atomic="true">
-            <span className="text-sm text-red-500 mt-2">
-              {state?.error && (
-                <div
-                  className="mb-4 text-sm text-red-500 rounded-lg"
-                  role="alert"
-                >
-                  {state?.error.description && (
-                    <div>
-                      {state?.error.description.map((msg, idx) => (
-                        <p key={idx}>{msg}</p>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-            </span>
-          </div>
+          <select
+            name="category"
+            id="category"
+            className="w-full p-2 rounded-md bg-slate-800 text-white border border-slate-950 focus:ring-blue-500 focus:border-blue-500 outline-none"
+          >
+            <option value="">Choose a Category</option>
+            <option value="cm355196b00006i3xezkhhqro">Games</option>
+            <option value="Sosmed">Social Media</option>
+            <option value="Private">Private</option>
+            <option value="Website">Website</option>
+          </select>
         </div>
       </div>
+
+      <div className="flex flex-col">
+        <label htmlFor="description" className="text-white">
+          Description
+        </label>
+        <textarea
+          name="description"
+          id="description"
+          rows={3}
+          className="w-full min-h-24 rounded-md px-2 py-2 focus:outline-none bg-slate-800 text-white max-h-40"
+        />
+        {state?.error?.description && (
+          <span className="text-sm text-red-500 mt-2">
+            {state.error.description.join(", ")}
+          </span>
+        )}
+      </div>
+
       <button
-        className="bg-slate-700/50 hover:bg-slate-700 px-4 py-2 rounded-lg"
         type="submit"
+        className="bg-slate-700/50 hover:bg-slate-700 text-white font-semibold py-2 rounded-lg transition-all duration-200"
       >
-        <span className="text-white font-semibold">Save</span>
+        Save
       </button>
     </form>
   );

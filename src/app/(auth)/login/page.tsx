@@ -1,9 +1,11 @@
-import FormLogin from "@/components/auth/form-login";
-import { GithubButton, GoogleButton } from "@/components/auth/social-button";
+import FormLogin from "@/components/auth/formLogin";
+import { GithubButton, GoogleButton } from "@/components/auth/socialButton";
 import { Metadata } from "next";
+import Link from "next/link";
+import { BiArrowBack } from "react-icons/bi";
 
 export const metadata: Metadata = {
-  title: "Sign In",
+  title: "Account Saver | Sign In",
 };
 
 export default function LoginPage({
@@ -15,7 +17,14 @@ export default function LoginPage({
 
   return (
     <div className="p-6 space-y-2 overflow-hidden">
-      <h1 className="text-2xl font-bold text-white">Sign In to your account</h1>
+      <div className="flex">
+        <Link href={"/"}>
+          <BiArrowBack className="w-4 h-4 mt-3 text-slate-300" />
+        </Link>
+        <h1 className="text-2xl font-bold mx-1 text-white flex flex-none">
+          Sign In to your account
+        </h1>
+      </div>
       {params === "OAuthAccountNotLinked" ? (
         <div
           className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-100"

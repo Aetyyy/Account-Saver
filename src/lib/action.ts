@@ -74,16 +74,18 @@ export const signInCredentials = async (
     };
   }
 
-  const { email, password } = validatedFields.data;
+  const { identifier, password } = validatedFields.data;
 
   try {
     await signIn("credentials", {
-      email,
+      identifier,
       password,
       redirect: false,
     });
-    redirect("/dashboard");
+
+    redirect("/storage");
   } catch (error) {
+    console.log(error);
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":

@@ -8,6 +8,16 @@ export const formatDate = (dateStr: string) => {
   return formatter.format(date);
 };
 
+export const formatDateSM = (dateStr: string) => {
+  const date = new Date(dateStr);
+  const formatter = new Intl.DateTimeFormat("id-ID", {
+    dateStyle: "short",
+    timeStyle: "short",
+    timeZone: "Asia/Jakarta",
+  });
+  return formatter.format(date);
+};
+
 export const encryptPass = (text: string): string => {
   const salt = "eNcSlT24rXz";
   const textToChars = (text: string): number[] =>
@@ -43,4 +53,3 @@ export const decryptPass = (encoded: string): string => {
     .map((charCode: number): string => String.fromCharCode(charCode))
     .join("");
 };
-

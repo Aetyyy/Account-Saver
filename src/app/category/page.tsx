@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import CategoryTable from "@/components/category/category-table";
+import IndexCategory from "@/components/category";
 import type { Metadata } from "next";
 
 export const metadata: () => Promise<Metadata> = async () => {
@@ -13,30 +13,8 @@ export const metadata: () => Promise<Metadata> = async () => {
 
 export default function CategoryPage() {
   return (
-    <div className="mt-[100px] container mx-auto px-4 transition-all ease-in duration-500">
-      <div className="max-w-screen-2xl mx-auto py-10 flex flex-col gap-6">
-        <div className="bg-slate-900/50 px-8 py-4 rounded-lg flex flex-wrap justify-between items-center gap-4 overflow-hidden">
-          <div className="text-white text-2xl font-bold">Account Category</div>
-          <div className="flex flex-row justify-end items-center gap-2">
-            <button className="bg-slate-700/50 hover:bg-slate-700 px-4 py-2 rounded-lg">
-              <span className="text-white font-semibold">Back</span>
-            </button>
-            <button className="bg-slate-700/50 hover:bg-slate-700 px-4 py-2 rounded-lg">
-              <span className="text-white font-semibold">Export Excel</span>
-            </button>
-            <a
-              className="bg-slate-700/50 hover:bg-slate-700 px-4 py-2 rounded-lg"
-              href={"/category/add"}
-            >
-              <span className="text-white font-semibold">Add Data</span>
-            </a>
-          </div>
-        </div>
-
-        <div className="bg-slate-900/50 py-4 rounded-lg flex flex-col w-full justify-between items-center overflow-x-auto">
-          <CategoryTable />
-        </div>
-      </div>
-    </div>
+    <>
+      <IndexCategory />
+    </>
   );
 }

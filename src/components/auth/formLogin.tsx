@@ -32,16 +32,16 @@ export default function FormLogin() {
       ) : null}
       <div>
         <label
-          htmlFor="email"
+          htmlFor="identifier"
           className="block mb-2 text-sm font-medium text-white"
         >
-          Email
+          Email or Username
         </label>
         <input
-          type="email"
-          name="email"
-          className="bg-[#41729F] border border-[#CED4DA] hover:border-[#74C0FC] focus:border-[#74C0FC] outline-none transition-colors duration-300 text-[#6C757D] rounded-lg w-full p-2.5"
-          placeholder="Masukkan email anda"
+          type="text"
+          name="identifier"
+          className="text-white bg-slate-700/90 border border-slate-600 hover:border-slate-800 focus:border-slate-800 focus:outline-none transition-colors duration-300 rounded-lg w-full p-2.5"
+          placeholder="Enter your email or username"
         />
         <div aria-live="polite" aria-atomic="true">
           <span className="text-sm text-red-500 mt-2">
@@ -50,9 +50,9 @@ export default function FormLogin() {
                 className="mb-4 text-sm text-red-500 rounded-lg"
                 role="alert"
               >
-                {state.error.email && (
+                {state.error.identifier && (
                   <div>
-                    {state.error.email.map((msg, idx) => (
+                    {state.error.identifier.map((msg, idx) => (
                       <p key={idx}>{msg}</p>
                     ))}
                   </div>
@@ -75,7 +75,7 @@ export default function FormLogin() {
             value={password}
             onChange={handlePasswordChange}
             name="password"
-            className="bg-white border border-[#CED4DA] hover:border-[#74C0FC] focus:border-[#74C0FC] outline-none transition-colors duration-300 text-[#6C757D] rounded-lg w-full p-2.5"
+            className="text-white bg-slate-700/90 border border-slate-600 hover:border-slate-800 focus:border-slate-800 focus:outline-none transition-colors duration-300 rounded-lg w-full p-2.5"
             placeholder="Enter your password"
           />
           <button

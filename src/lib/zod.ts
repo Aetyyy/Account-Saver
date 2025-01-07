@@ -23,7 +23,7 @@ export const signUpSchema = object({
 });
 
 export const signInSchema = object({
-  email: string().email("Invalid email").min(1, "Email is required"),
+  identifier: string().min(1, "Email is required"),
   password: string()
     .min(8, "Password is required 8 charracters")
     .max(32, "Password must be less than 32 charracters"),
@@ -49,5 +49,20 @@ export const inputAccountSchema = object({
   title: string().min(1, "Name is required"),
   account: string().email("Invalid email").min(1, "Account is required"),
   password: string().min(1, "Password is required"),
+  description: string(),
+  category: string(),
+});
+
+export const updateAccountSchema = object({
+  title: string(),
+  account: string(),
+  password: string(),
+  description: string(),
+  category: string(),
+  id: string(),
+});
+
+export const inputCategorySchema = object({
+  name: string().min(1, "Name is required"),
   description: string(),
 });

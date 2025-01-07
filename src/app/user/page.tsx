@@ -1,4 +1,4 @@
-import UserTable from "@/components/user-table";
+import UserTable from "@/components/userTable";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

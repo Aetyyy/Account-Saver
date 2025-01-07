@@ -10,7 +10,7 @@ import Github from "next-auth/providers/github";
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: {
-    maxAge: 30 * 60,
+    maxAge: 3 * 60 * 60, // 3 hours
     strategy: "jwt",
   },
   pages: {
@@ -21,7 +21,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Github,
     Credentials({
       credentials: {
-        email: {},
+        identifier: {},
         password: {},
       },
       authorize: async (credentials) => {
@@ -31,12 +31,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null;
         }
 
-        const { email, password } = validatedFields.data;
+        const { identifier, password } = validatedFields.data;
+
+        const isEmail = identifier.includes("@");
 
         const user = await prisma.user.findUnique({
-          where: {
-            email,
-          },
+          where: isEmail ? { email: identifier } : { name: identifier },
         });
 
         if (!user || !user.password) {
@@ -51,32 +51,39 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
-  //callback
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const ProtectedRoutes = ["/user", "/product", "/storage"];
-      const LoginRoutes = ["/login", "/register", "/forgot-password"];
+      const protectedRoutes = ["/user", "/product", "/storage", "/category"];
+      const loginRoutes = ["/login", "/register", "/forgot-password"];
+      const { pathname } = nextUrl;
 
-      if (!isLoggedIn && ProtectedRoutes.includes(nextUrl.pathname)) {
+      // Redirect to login if accessing protected routes without being logged in
+      if (!isLoggedIn && protectedRoutes.includes(pathname)) {
         return Response.redirect(new URL("/login", nextUrl.origin));
       }
 
-      if (isLoggedIn && LoginRoutes.includes(nextUrl.pathname)) {
-        return Response.redirect(new URL("/dashboard", nextUrl.origin));
+      // Redirect to storage if logged in and accessing login-related routes
+      if (isLoggedIn && loginRoutes.includes(pathname)) {
+        return Response.redirect(new URL("/storage", nextUrl.origin));
       }
 
-      const isStoragePage = nextUrl.pathname.startsWith("/storage");
-      if (!isLoggedIn && isStoragePage) {
+      // Redirect to login if accessing storage or category pages without being logged in
+      if (
+        !isLoggedIn &&
+        (pathname.startsWith("/storage") || pathname.startsWith("/category"))
+      ) {
         return Response.redirect(new URL("/login", nextUrl.origin));
       }
 
+      // Redirect to storage if logged in and accessing forgot-password or reset-password pages
       const isForgotPasswordPage =
-        nextUrl.pathname.startsWith("/forgot-password/");
-      nextUrl.pathname.startsWith("/reset-password/");
+        pathname.startsWith("/forgot-password/") ||
+        pathname.startsWith("/reset-password/");
       if (isLoggedIn && isForgotPasswordPage) {
-        return Response.redirect(new URL("/dashboard", nextUrl.origin));
+        return Response.redirect(new URL("/storage", nextUrl.origin));
       }
+
       return true;
     },
     jwt({ token, user }) {
