@@ -13,15 +13,16 @@ function CloseButton({ close }: { close: () => void }) {
   );
 }
 
-function SubmitButton() {
+function SubmitButton({ disabled }: { disabled?: boolean }) {
   const { pending } = useFormStatus();
+  const isDisabled = pending || disabled;
   return (
     <button
       type="submit"
       disabled={pending}
       className="bg-blue-600 hover:bg-blue-700 hover:scale-110 active:scale-95 active:bg-blue-600 transition-transform duration-300 px-4 py-2 rounded-lg text-white font-semibold uppercase w-full"
     >
-      {pending ? "Submitting..." : "Submit"}
+      {isDisabled ? "Submitting..." : "Submit"}
     </button>
   );
 }

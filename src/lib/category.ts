@@ -9,22 +9,33 @@
 import { category } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
-import { inputCategorySchema } from "@/lib/zod";
+import { inputCategorySchema, updateCategorySchema } from "@/lib/zod";
+
+type ServerResponse = {
+  message?: string;
+  errors?: Record<string, string[]>;
+  status: boolean;
+  data?: category[];
+};
+
+// Variabel global untuk mencegah spam request
+let isProcessingInsert = false;
+let isProcessingUpdate = false;
+let isProcessingDelete = false;
 
 /**
  * Get Function
- *
- * Created By Avaa & Aethyy
  */
-const getData = async (id?: string) => {
+const getData = async (): Promise<ServerResponse> => {
   const session = await auth();
   if (!session) {
     return {
-      message: "anda harus login terlebih dahulu.",
+      status: false,
+      message: "Anda harus login terlebih dahulu.",
     };
   }
 
-  let data: category[] = await prisma.category.findMany({
+  const data: category[] = await prisma.category.findMany({
     where: {
       userid: session.user.id,
       deletedat: null,
@@ -33,33 +44,47 @@ const getData = async (id?: string) => {
 
   if (data.length > 0) {
     return {
-      message: "data ditemukan.",
-      status: 200,
+      status: true,
+      message: "Data ditemukan.",
       data,
     };
   } else {
     return {
-      message: "data tidak ditemukan.",
-      status: 500,
+      status: false,
+      message: "Data tidak ditemukan.",
     };
   }
 };
 
 /**
  * Insert Function
- *
- * Created By Avaa & Aethyy
  */
-const insertData = async (_prevState: any, formData: FormData) => {
+const insertData = async (
+  _prevState: unknown,
+  formData: FormData
+): Promise<ServerResponse> => {
+  if (isProcessingInsert) {
+    return {
+      status: false,
+      message: "Request is being processed. Please wait.",
+    };
+  }
+  isProcessingInsert = true;
   const session = await auth();
-  if (!session) return null;
+  if (!session) {
+    isProcessingInsert = false;
+    return { status: false, message: "Unauthorized" };
+  }
+
   const validatedFields = inputCategorySchema.safeParse(
     Object.fromEntries(formData.entries())
   );
 
   if (!validatedFields.success) {
+    isProcessingInsert = false;
     return {
-      error: validatedFields.error.flatten().fieldErrors,
+      status: false,
+      errors: validatedFields.error.flatten().fieldErrors,
     };
   }
 
@@ -69,7 +94,8 @@ const insertData = async (_prevState: any, formData: FormData) => {
     if (!session.user.id) {
       throw new Error("User ID is required");
     }
-    const createCategory = await prisma.category.create({
+
+    await prisma.category.create({
       data: {
         name,
         description,
@@ -77,62 +103,85 @@ const insertData = async (_prevState: any, formData: FormData) => {
       },
     });
 
-    if (createCategory) {
-      return {
-        // message: "Success Create Category",
-        status: true,
-      };
-    }
-  } catch (e: any) {
     return {
-      message: "Failed Create Category",
-      status: false,
+      status: true,
+      message: "Category created successfully",
     };
+  } catch (e) {
+    return {
+      status: false,
+      message: `Failed to create category: ${e}`,
+    };
+  } finally {
+    isProcessingInsert = false;
   }
 };
 
 /**
  * Update Function
- *
- * Created By Avaa & Aethyy
  */
-const updateData = async ({ id, name, description }: category) => {
+const updateData = async (
+  _prevState: unknown,
+  formData: FormData
+): Promise<ServerResponse> => {
+  if (isProcessingUpdate) {
+    return {
+      status: false,
+      message: "Request is being processed. Please wait.",
+    };
+  }
+  isProcessingUpdate = true;
+  const session = await auth();
+  if (!session) {
+    isProcessingUpdate = false;
+    return { status: false, message: "Unauthorized" };
+  }
+
+  const validatedFields = updateCategorySchema.safeParse(
+    Object.fromEntries(formData.entries())
+  );
+
+  if (!validatedFields.success) {
+    isProcessingUpdate = false;
+    return {
+      status: false,
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const { name, description, id } = validatedFields.data;
+
   try {
-    const beforeUpdate = await prisma.category.findFirst({
+    await prisma.category.update({
       where: { id },
-    });
-    const updatedCategory = await prisma.category.update({
-      data: {
-        name,
-        description,
-      },
-      where: {
-        id,
-      },
+      data: { name, description },
     });
 
-    if (beforeUpdate?.updatedat != updatedCategory.updatedat) {
-      return {
-        message: "berhasil",
-      };
-    } else {
-      return {
-        message: "gagal 1",
-      };
-    }
+    return {
+      status: true,
+      message: "Category updated successfully",
+    };
   } catch (e) {
     return {
-      message: "gagal 2",
+      status: false,
+      message: `Failed to update category: ${e}`,
     };
+  } finally {
+    isProcessingUpdate = false;
   }
 };
 
 /**
  * Delete Function
- *
- * Created By Avaa & Aethyy
  */
 const deleteData = async ({ id }: { id: string }) => {
+  if (isProcessingDelete) {
+    return {
+      message: "Request is being processed. Please wait.",
+      status: false,
+    };
+  }
+  isProcessingDelete = true;
   try {
     const beforeDelete = await prisma.category.findFirst({
       where: { id },
@@ -141,23 +190,17 @@ const deleteData = async ({ id }: { id: string }) => {
       data: {
         deletedat: new Date(),
       },
-      where: {
-        id,
-      },
+      where: { id },
     });
-    if (beforeDelete?.deletedat != deletedCategory.deletedat) {
-      return {
-        message: "berhasil",
-      };
+    if (beforeDelete?.deletedat !== deletedCategory.deletedat) {
+      return { message: "Berhasil", status: true };
     } else {
-      return {
-        message: "gagal 1",
-      };
+      return { message: "Gagal menghapus data", status: false };
     }
   } catch (e) {
-    return {
-      message: "gagal 2",
-    };
+    return { message: `Failed: ${e}`, status: false };
+  } finally {
+    isProcessingDelete = false;
   }
 };
 

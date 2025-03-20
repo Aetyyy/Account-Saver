@@ -228,7 +228,7 @@ export default function page() {
       </RevealLRLR>
       <RevealLRLR>
         <p className="text-slate-300 my-2">
-          Usage Data may include information such as Your Device's Internet
+          Usage Data may include information such as Your Device&apos;s Internet
           Protocol address (e.g. IP address), browser type, browser version, the
           pages of our Service that You visit, the time and date of Your visit,
           the time spent on those pages, unique device identifiers and other
@@ -280,7 +280,7 @@ export default function page() {
         <p className="text-slate-300 mt-2">
           If You decide to register through or otherwise grant us access to a
           Third-Party Social Media Service, We may collect Personal data that is
-          already associated with Your Third-Party Social Media Service's
+          already associated with Your Third-Party Social Media Service&apos;s
           account, such as Your name, Your email address, Your activities or
           Your contact list associated with that account.
         </p>
@@ -288,11 +288,11 @@ export default function page() {
       <RevealLRLR>
         <p className="text-slate-300">
           You may also have the option of sharing additional information with
-          the Company through Your Third-Party Social Media Service's account.
-          If You choose to provide such information and Personal Data, during
-          registration or otherwise, You are giving the Company permission to
-          use, share, and store it in a manner consistent with this Privacy
-          Policy.
+          the Company through Your Third-Party Social Media Service&apos;s
+          account. If You choose to provide such information and Personal Data,
+          during registration or otherwise, You are giving the Company
+          permission to use, share, and store it in a manner consistent with
+          this Privacy Policy.
         </p>
       </RevealLRLR>
       <RevealLRLR>
@@ -473,10 +473,10 @@ export default function page() {
               </strong>
               <br /> To contact You by email, telephone calls, SMS, or other
               equivalent forms of electronic communication, such as a mobile
-              application's push notifications regarding updates or informative
-              communications related to the functionalities, products or
-              contracted services, including the security updates, when
-              necessary or reasonable for their implementation.
+              application&apos;s push notifications regarding updates or
+              informative communications related to the functionalities,
+              products or contracted services, including the security updates,
+              when necessary or reasonable for their implementation.
             </p>
           </li>
           <li className="list-disc text-white">
@@ -620,12 +620,12 @@ export default function page() {
       <RevealLRLR>
         <p className="text-slate-300">
           Your information, including Personal Data, is processed at the
-          Company's operating offices and in any other places where the parties
-          involved in the processing are located. It means that this information
-          may be transferred to — and maintained on — computers located outside
-          of Your state, province, country or other governmental jurisdiction
-          where the data protection laws may differ than those from Your
-          jurisdiction.
+          Company&apos;s operating offices and in any other places where the
+          parties involved in the processing are located. It means that this
+          information may be transferred to — and maintained on — computers
+          located outside of Your state, province, country or other governmental
+          jurisdiction where the data protection laws may differ than those from
+          Your jurisdiction.
         </p>
       </RevealLRLR>
       <RevealLRLR>
@@ -758,7 +758,7 @@ export default function page() {
       </RevealLRLR>
       <RevealLRLR>
         <h2 className="text-white font-extrabold mt-6 text-3xl">
-          Children's Privacy
+          Children&apos;s Privacy
         </h2>
       </RevealLRLR>
       <RevealLRLR>
@@ -776,7 +776,7 @@ export default function page() {
         <p className="text-slate-300">
           If We need to rely on consent as a legal basis for processing Your
           information and Your country requires consent from a parent, We may
-          require Your parent's consent before We collect and use that
+          require Your parent&apos;s consent before We collect and use that
           information.
         </p>
       </RevealLRLR>
@@ -789,8 +789,8 @@ export default function page() {
         <p className="text-slate-300">
           Our Service may contain links to other websites that are not operated
           by Us. If You click on a third party link, You will be directed to
-          that third party's site. We strongly advise You to review the Privacy
-          Policy of every site You visit.
+          that third party&apos;s site. We strongly advise You to review the
+          Privacy Policy of every site You visit.
         </p>
       </RevealLRLR>
       <RevealLRLR>

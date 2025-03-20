@@ -1,4 +1,3 @@
-// import { sendMail } from "@/lib/mailTransporter";
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 

@@ -12,7 +12,7 @@ const DynamicHeaderAuth = dynamic(
 
 export default function Navbar({ session }: { session: Session | null }) {
   return (
-    <nav className="bg-navbar-light border-b border-navbar-border z-30 fixed w-full top-0">
+    <nav className="bg-navbar-light border-b border-navbar-border z-30 fixed w-full top-0 shadow-lg">
       <DynamicHeaderAuth session={session} />
     </nav>
   );

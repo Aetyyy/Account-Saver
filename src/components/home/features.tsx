@@ -12,17 +12,17 @@ import { RevealLRLR } from "@/components/animations/reveal";
 export default function Features() {
   return (
     <section id="features">
-      <div className="max-w-4xl container mx-auto px-5 mt-16">
+      <div className="max-w-4xl container mx-auto px-5 my-16">
         <div className="text-center">
           <RevealLRLR>
             <h2 className="font-semibold text-3xl text-slate-300">
-              Features you'll love
+              Features you&apos;ll love
             </h2>
           </RevealLRLR>
           <RevealLRLR>
             <p className="max-w-md mx-auto mt-2 text-slate-300">
-              Simpan dan kelola semua akun digital Anda dengan aman dalam satu
-              tempat yang mudah diakses
+              Securely store and manage all your digital accounts in one
+              easy-to-access place
             </p>
           </RevealLRLR>
         </div>
@@ -37,8 +37,8 @@ export default function Features() {
                   Secure Storage
                 </h3>
                 <p className="mt-1 text-slate-300">
-                  Sistem enkripsi yang kuat untuk melindungi data akun Anda.
-                  Keamanan adalah prioritas utama kami.
+                  Strong encryption system to protect your account data.
+                  Security is our top priority.
                 </p>
               </div>
             </div>
@@ -53,8 +53,8 @@ export default function Features() {
                   Multi-Platform Access
                 </h3>
                 <p className="mt-1 text-slate-300">
-                  Akses akun Anda dari berbagai perangkat - mobile, tablet &
-                  desktop. Tersinkronisasi secara real-time.
+                  Access your account from multiple devices - mobile, tablet &
+                  desktop. Synchronized in real-time.
                 </p>
               </div>
             </div>
@@ -69,8 +69,8 @@ export default function Features() {
                   Recovery Support
                 </h3>
                 <p className="mt-1 text-slate-300">
-                  Sistem pemulihan akun yang mudah dengan verifikasi email.
-                  Tidak perlu khawatir kehilangan akses.
+                  Easy account recovery system with email verification. No need
+                  to worry about losing access.
                 </p>
               </div>
             </div>
@@ -85,8 +85,8 @@ export default function Features() {
                   Cross Platform
                 </h3>
                 <p className="mt-1 text-slate-300">
-                  Mendukung berbagai platform dan layanan online. Simpan akun
-                  dari sosial media hingga email dalam satu tempat.
+                  Supports various online platforms and services. Keep your
+                  accounts from social media to email in one place.
                 </p>
               </div>
             </div>
@@ -101,8 +101,8 @@ export default function Features() {
                   Cloud Backup
                 </h3>
                 <p className="mt-1 text-slate-300">
-                  Simpan data akun Anda dengan aman di cloud dan akses kapan
-                  saja. Data selalu tersimpan dengan aman.
+                  Store your account data securely in the cloud and access it
+                  anytime. anytime. Data is always safely stored.
                 </p>
               </div>
             </div>
@@ -117,8 +117,8 @@ export default function Features() {
                   Export to Excel
                 </h3>
                 <p className="mt-1 text-slate-300">
-                  Penyimpanan terbaik dengan sistem ekspor ke MS Excel untuk
-                  anda yang ingin menyatat akun di lokal
+                  Best storage with export system to MS Excel for those who want
+                  to record accounts locally
                 </p>
               </div>
             </div>

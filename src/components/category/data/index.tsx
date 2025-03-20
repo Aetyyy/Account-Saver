@@ -1,79 +1,121 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import ModalForm from "@/components/category/form/modal";
-import AddCategory from "@/components/category/form";
+import React, { useCallback, useEffect, useState } from "react";
 import { category } from "@prisma/client";
+import { getData } from "@/lib/category"; // Fungsi server-side getData
+import AddCategory from "@/components/category/form";
 import CategoryTable from "@/components/category/categoryTable";
-import { getData } from "@/lib/category";
-import { set } from "zod";
+import ModalForm from "@/components/category/form/modal";
 
-export default function CategoryModal() {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+export default function IndexCategory() {
+  // State data
   const [categoryData, setCategoryData] = useState<category[]>([]);
-  const [updateData, setUpdateData] = useState<boolean>(false);
+  // State loading
   const [loading, setLoading] = useState<boolean>(true);
-  //   const [clientData, setClientData] = useState<null>(null);
+  // State trigger update
+  const [updateData, setUpdateData] = useState<boolean>(false);
+
+  // State modal Add/Edit
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [modalMode, setModalMode] = useState<"add" | "edit">("add");
+  const [selectedCategory, setSelectedCategory] = useState<category | null>(
+    null
+  );
 
-  const handleOpen = (mode: "add" | "edit") => {
-    setIsOpen(true);
-    setModalMode(mode);
-  };
+  // State untuk mode select di tabel
+  const [isSelectMode, setIsSelectMode] = useState<boolean>(false);
 
+  // Fungsi buka modal add/edit
+  const handleOpenModal = useCallback(
+    (mode: "add" | "edit", category?: category) => {
+      setIsOpen(true);
+      setModalMode(mode);
+      if (category) {
+        setSelectedCategory(category);
+      }
+    },
+    []
+  );
+
+  // Fungsi untuk menutup modal; dibungkus dengan useCallback agar stabil
+  const handleCloseModal = useCallback(() => {
+    setIsOpen(false);
+    setSelectedCategory(null);
+  }, []);
+
+  // Fungsi updateCategory juga dibungkus agar referensinya tidak berubah tiap render
+  const updateCategoryStable = useCallback(() => {
+    setUpdateData(true);
+  }, []);
+
+  // Toggle mode select
+  const handleToggleSelect = useCallback(() => {
+    setIsSelectMode((prev) => !prev);
+  }, []);
+
+  // Fetch data kategori
   useEffect(() => {
-    const getCategory = async () => {
+    const fetchCategories = async () => {
       try {
-        const category = await getData();
-        if (category.data) {
-          setCategoryData(category.data);
+        const res = await getData();
+        if (res.status && res.data) {
+          setCategoryData(res.data);
         }
-      } catch (e) {
-        console.log(e);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
       } finally {
         setLoading(false);
       }
     };
+    fetchCategories();
 
-    const updateCategory = async () => {
-      try {
-        const category = await getData();
-        if (category.data) {
-          setCategoryData(category.data);
-        }
-      } catch (e) {
-        console.log(e);
-      } finally {
-        setUpdateData(false);
-      }
-    };
-
-    getCategory();
-
+    // Jika updateData bernilai true, panggil ulang getData
     if (updateData) {
-      updateCategory();
+      (async () => {
+        try {
+          const res = await getData();
+          if (res.status && res.data) {
+            setCategoryData(res.data);
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setUpdateData(false);
+        }
+      })();
     }
   }, [updateData]);
 
   return (
     <>
-      <AddCategory onOpen={() => handleOpen("add")} />
+      {/* Header */}
+      <AddCategory
+        onOpen={() => handleOpenModal("add")}
+        onToggleSelect={handleToggleSelect}
+        isSelectMode={isSelectMode}
+        // Tampilkan tombol Select jika data ada (misalnya, > 1)
+        hasData={categoryData.length > 1}
+      />
+
+      {/* Modal Form (Add/Edit) */}
       <ModalForm
         isOpen={isOpen}
-        // OnSubmit={handleSubmit}
-        onClose={() => setIsOpen(false)}
+        onClose={handleCloseModal}
         modalMode={modalMode}
-        updateCategory={() => setUpdateData(true)}
-        // clientData={clientData}
+        updateCategory={updateCategoryStable}
+        initialData={selectedCategory}
       />
-      <div className="bg-slate-900/50 py-4 rounded-lg overflow-x-auto">
-        <CategoryTable
-          dataCategory={categoryData}
-          setCategory={setCategoryData}
-          loading={loading}
-          updateCategory={() => setUpdateData(true)}
-        />
-      </div>
+
+      {/* Tabel */}
+      <CategoryTable
+        dataCategory={categoryData}
+        setCategory={setCategoryData}
+        loading={loading}
+        updateCategory={updateCategoryStable}
+        isSelectMode={isSelectMode}
+        onToggleSelect={handleToggleSelect}
+        onEdit={(cat) => handleOpenModal("edit", cat)}
+      />
     </>
   );
 }

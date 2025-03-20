@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import AccountTable from "@/components/storage/accountTable";
 import Select, { MultiValue } from "react-select";
 import { OptionType } from "@/types/option.i";
-import { category } from "@prisma/client";
 import { getData } from "@/lib/category";
 
 export default function AccountFilter() {
@@ -54,9 +53,7 @@ export default function AccountFilter() {
         </div>
       </div>
 
-      <div className="bg-slate-900/50 py-2 rounded-lg overflow-auto">
-        <AccountTable category={category} />
-      </div>
+      <AccountTable category={category} />
     </>
   );
 }

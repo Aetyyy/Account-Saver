@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import { getUsers } from "@/lib/data";
 import { formatDate, formatDateSM } from "@/lib/utils";
 import Loading from "@/components/loading";
+import { user } from "@prisma/client";
 
 const ITEMS_PER_PAGE = 5;
 
 export default function UserTable() {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<user[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
 
@@ -18,7 +19,7 @@ export default function UserTable() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const fetchedUsers: any = await getUsers();
+        const fetchedUsers = (await getUsers()) || [];
         setUsers(fetchedUsers);
       } catch (error) {
         console.log(error);
@@ -72,7 +73,7 @@ export default function UserTable() {
             </tr>
           </thead>
           <tbody className="text-slate-100">
-            {paginatedUsers.map((user: any) => (
+            {paginatedUsers.map((user: user) => (
               <tr key={user.id} className="even:bg-gray-500">
                 <td className="py-3 px-6 border-2 border-slate-700">
                   {user.name}

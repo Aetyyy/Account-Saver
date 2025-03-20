@@ -31,6 +31,18 @@ export const signUpCredentials = async (
   const hashPassword = hashSync(password, 12);
 
   try {
+    const existingEmail = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (existingEmail) {
+      return {
+        error: {
+          email: ["This email is already taken"],
+        },
+      };
+    }
+
     const existingUser = await prisma.user.findUnique({
       where: { name },
     });
@@ -53,8 +65,8 @@ export const signUpCredentials = async (
 
     await generateForgotPasswordToken(user.id);
   } catch (error) {
-    console.log(error);
-    return { message: "Failed to register user" };
+    console.error(error);
+    return { message: "Failed to register user", status: false };
   }
   redirect("/login");
 };
@@ -82,8 +94,6 @@ export const signInCredentials = async (
       password,
       redirect: false,
     });
-
-    redirect("/storage");
   } catch (error) {
     console.log(error);
     if (error instanceof AuthError) {
@@ -96,6 +106,7 @@ export const signInCredentials = async (
     }
     throw error;
   }
+  redirect("/storage");
 };
 
 // Forgot Password Form action

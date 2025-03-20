@@ -1,52 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import React, { useEffect, useState, useRef } from "react";
+import React from "react";
 import { RevealLRLR } from "@/components/animations/reveal";
 
 export default function About() {
-  const [scrollPosition, setScrollPosition] = useState<number>(0);
-  const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollPosition(window.scrollY);
-    };
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            history.pushState(null, "", "/about");
-          } else {
-            history.pushState(null, "", "/");
-          }
-        });
-      },
-      { threshold: 0.5 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
-    };
-  }, []);
-
   return (
-    <section
-      ref={sectionRef}
-      id="about"
-      className={scrollPosition > 0 ? "my-16 md:my-64" : "my-16 md:my-64"}
-    >
+    <section id="about" className="my-16 md:my-36">
       <div className="flex flex-col items-center max-w-screen-xl mx-auto">
         <RevealLRLR>
           <div className="w-full p-10 flex justify-center">
@@ -77,9 +37,9 @@ export default function About() {
             </RevealLRLR>
             <RevealLRLR>
               <p className="text-slate-300 text-pretty">
-                Account Saver adalah platform khusus yang dirancang untuk
-                menyimpan dengan aman dan mengelola semua kredensial akun Anda
-                dari berbagai platform...
+                Account Saver is a specialized platform designed to securely
+                store and manage all your account credentials from multiple
+                platforms...
               </p>
             </RevealLRLR>
           </div>

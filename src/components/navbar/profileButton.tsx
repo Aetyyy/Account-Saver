@@ -1,5 +1,6 @@
 "use client";
 
+import { Session } from "next-auth";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
@@ -7,16 +8,12 @@ import { FiUsers } from "react-icons/fi";
 import { IoSettingsOutline } from "react-icons/io5";
 import { TbLogout } from "react-icons/tb";
 
-interface ProfileButtonProps {
-  session: any;
-}
-
-export function ProfileButton({ session }: ProfileButtonProps) {
+export function ProfileButton({ session }: { session: Session }) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const profileRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleClickOutside = (event: any) => {
+    const handleClickOutside = (event: MouseEvent) => {
       if (
         profileRef.current &&
         !profileRef.current.contains(event.target as Node)

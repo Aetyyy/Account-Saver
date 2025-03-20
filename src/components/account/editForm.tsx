@@ -5,15 +5,24 @@ import { getData } from "@/lib/category";
 import { useFormState } from "react-dom";
 import { decryptPass } from "@/lib/utils";
 
+interface CategoryProps {
+  id: string;
+  description: string;
+  userid: string;
+  createdat: Date;
+  updatedat: Date;
+  deletedat: Date | null;
+  name: string;
+}
+
 export default function Form({ AccountId }: { AccountId: string }) {
   const [state, formAction] = useFormState(updateData, null);
-  const [accountData, setAccountData] = useState<any>(null);
-  const [categories, setCategories] = useState<any[]>([]);
-  const [title, setTitle] = useState("");
-  const [account, setAccount] = useState("");
-  const [password, setPassword] = useState("");
+  const [categories, setCategories] = useState<CategoryProps[]>([]);
+  const [title, setTitle] = useState<string>("");
+  const [account, setAccount] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [categoryId, setCategoryId] = useState<string | null>("");
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState<string>("");
 
   useEffect(() => {
     // Fetch account data by ID
@@ -21,7 +30,6 @@ export default function Form({ AccountId }: { AccountId: string }) {
       const result = await getDataById(AccountId);
       if (result?.data) {
         const data = result.data;
-        setAccountData(data);
         setTitle(data.title);
         setAccount(data.account);
         setPassword(data.password);

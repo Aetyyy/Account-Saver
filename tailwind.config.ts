@@ -31,7 +31,13 @@ const config: Config = {
           },
         },
         sidebar: {
-          dark: "rgba(15, 23, 42)",
+          dark: {
+            bg: "rgba(15, 23, 42)",
+            on: "rgba(22, 35, 64)",
+          },
+          white: {
+            bg: "#FFFFFF",
+          },
         },
         button: {
           light: "#007BFF",

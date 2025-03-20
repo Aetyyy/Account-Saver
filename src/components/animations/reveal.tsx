@@ -30,40 +30,9 @@ export const RevealLRLR = ({ children }: Anim) => {
         visible: { opacity: 1, x: 0, transition: { duration: 0.5 } },
         hidden: { opacity: 0, x: -75, transition: { duration: 0.5 } },
       }}
-      style={{ overflow: "hidden" }}
     >
       {children}
     </motion.div>
-    // <div
-    //   ref={inViewRef}
-    //   style={{ position: "relative", width, overflow: "hidden" }}
-    // >
-    //   <motion.div
-    //     variants={{
-    //       visible: { opacity: 1, x: 0, transition: { duration: 0.25 } },
-    //       hidden: { opacity: 0, x: -75, transition: { duration: 0.25 } },
-    //     }}
-    //     initial="hidden"
-    //     animate={mainControls}
-    //     exit="exit"
-    //     transition={{
-    //       x: { type: "spring", stiffness: 300, damping: 30 },
-    //       opacity: { duration: 0.5 },
-    //     }}
-    //   >
-    //     {children}
-    //   </motion.div>
-    /* <motion.div
-        variants={{
-          hidden: { left: 0 },
-          visible: { left: "100%" },
-        }}
-        initial="hidden"
-        animate={slideControls}
-        transition={{ duration: 0.5, ease: "easeInOut" }}
-        className="absolute top-4 bottom-4 left-0 right-0 z-20 bg-transparent"
-      /> */
-    // </div>
   );
 };
 
@@ -82,4 +51,4 @@ export const RevealLRUp = ({ children }: Anim) => {
   );
 };
 
-export const RevealLRDown = ({ children }: Anim) => {};
+// export const RevealLRDown = ({ children }: Anim) => {};

@@ -1,75 +1,104 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CloseButton, SubmitButton } from "@/components/category/form/button";
-import { insertData } from "@/lib/category";
+import { insertData, updateData } from "@/lib/category";
 import { useFormState } from "react-dom";
-import { set } from "zod";
+import { category } from "@prisma/client";
 
-interface ModalAddProps {
+interface ModalFormProps {
   isOpen: boolean;
   onClose: () => void;
   modalMode: "add" | "edit";
   updateCategory: () => void;
+  initialData?: category | null;
 }
 
-export default function ModalAdd({
+interface FormState {
+  message?: string;
+  errors?: Record<string, string[]>;
+  status: boolean;
+}
+
+export default function ModalForm({
   isOpen,
   onClose,
   modalMode,
   updateCategory,
-}: ModalAddProps) {
-  const [state, formAction] = useFormState(insertData, null);
-  const [formData, setFormData] = useState<Record<string, string>>({
+  initialData,
+}: ModalFormProps) {
+  // Fungsi untuk memproses form (insert atau update)
+  const handleFormAction = async (
+    state: FormState,
+    formData: FormData
+  ): Promise<FormState> => {
+    if (modalMode === "add") {
+      const response = await insertData(state, formData);
+      return { ...state, ...response } as FormState;
+    } else {
+      const response = await updateData(state, formData);
+      return { ...state, ...response } as FormState;
+    }
+  };
+
+  const [state, formAction] = useFormState<FormState, FormData>(
+    handleFormAction,
+    { status: false, message: undefined, errors: undefined }
+  );
+
+  const [formData, setFormData] = useState<Partial<category>>({
     name: "",
     description: "",
   });
-  const [error, setError] = useState<boolean>(true);
+
+  // Atur nilai form saat modal terbuka atau ketika ada initialData
+  useEffect(() => {
+    if (isOpen) {
+      setFormData(initialData || { name: "", description: "" });
+    } else {
+      setFormData({ name: "", description: "" });
+    }
+  }, [isOpen, initialData]);
+
+  // Jika state berubah (misal: status true), panggil update dan tutup modal
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  useEffect(() => {
+    if (state && state.status) {
+      updateCategory();
+      onClose();
+      setIsSubmitting(false);
+    } else if (state && !state.status) {
+      setIsSubmitting(false);
+    }
+  }, [state, updateCategory, onClose]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    if (e.target.name === "name") {
-      setError(!value);
-    }
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleAction = async (formData: FormData) => {
-    await formAction(formData);
-    if (!error) {
-      setError(true);
-      setFormData({
-        name: "",
-        description: "",
-      });
-      updateCategory();
-      onClose();
-    }
-
-    console.log(error);
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    const formDataObj = new FormData(event.currentTarget);
+    await formAction(formDataObj);
+    // Perubahan state dari useFormState akan memicu useEffect untuk updateCategory dan onClose
   };
 
   return (
     <form
-      id="addForm"
-      action={handleAction}
+      id="categoryForm"
+      onSubmit={handleSubmit}
       className={`fixed inset-0 z-50 flex items-center justify-center transition-all duration-300 ease-in-out ${
         isOpen ? "visible bg-black/30" : "invisible"
       }`}
+      key={String(isOpen)}
     >
-      {state?.message && (
-        <div
-          className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-100"
-          role="alert"
-        >
-          <span className="font-medium">{state?.message}</span>
-        </div>
-      )}
       <div
         className={`bg-slate-800 shadow-2xl p-8 rounded-md grid grid-cols-2 gap-6 w-[30rem] max-w-full transition-all duration-300 ${
           isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"
@@ -78,6 +107,12 @@ export default function ModalAdd({
         <div className="col-span-2 text-white text-2xl font-bold text-center">
           {modalMode === "add" ? "Add Category" : "Edit Category"}
         </div>
+
+        {/* Input hidden untuk ID saat mode edit */}
+        {modalMode === "edit" && (
+          <input type="hidden" name="id" value={formData.id || ""} />
+        )}
+
         <div className="col-span-2 flex flex-col gap-2">
           <div className="flex flex-col">
             <label htmlFor="name" className="text-white font-semibold">
@@ -87,14 +122,14 @@ export default function ModalAdd({
               name="name"
               id="name"
               type="text"
-              value={formData.name}
+              value={formData.name || ""}
               onChange={handleInputChange}
               placeholder="Enter category name"
               className="px-4 py-2 rounded-lg bg-slate-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
             />
-            {state?.error?.name && (
+            {state && !state.status && state.errors && state.errors.name && (
               <span className="text-sm text-red-500 mt-2">
-                {state.error.name.join(", ")}
+                {state.errors.name.join(", ")}
               </span>
             )}
           </div>
@@ -106,7 +141,7 @@ export default function ModalAdd({
               name="description"
               id="description"
               rows={2}
-              value={formData.description}
+              value={formData.description || ""}
               onChange={handleInputChange}
               placeholder="Enter description"
               className="px-4 py-2 rounded-lg bg-slate-700 text-white outline-none focus:ring-2 focus:ring-blue-500 min-h-10 max-h-24 overflow-y-auto"
@@ -115,7 +150,7 @@ export default function ModalAdd({
         </div>
         <div className="col-span-2 flex justify-end gap-4">
           <CloseButton close={onClose} />
-          <SubmitButton />
+          <SubmitButton disabled={isSubmitting} />
         </div>
       </div>
     </form>

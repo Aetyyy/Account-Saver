@@ -66,3 +66,9 @@ export const inputCategorySchema = object({
   name: string().min(1, "Name is required"),
   description: string(),
 });
+
+export const updateCategorySchema = object({
+  id: string(),
+  name: string(),
+  description: string().optional(),
+});

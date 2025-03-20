@@ -62,7 +62,7 @@ const getDataById = async (id: string) => {
  *
  * Created By Avaa & Aethyy
  */
-const getData = async (id?: string) => {
+const getData = async () => {
   const session = await auth();
   if (!session) {
     return {
@@ -112,7 +112,7 @@ const getData = async (id?: string) => {
  *
  * Created By Avaa & Aethyy
  */
-const insertData = async (prevState: any, formData: FormData) => {
+const insertData = async (prevState: unknown, formData: FormData) => {
   const session = await auth();
   if (!session) return null;
   const validatedFields = inputAccountSchema.safeParse(
@@ -137,7 +137,7 @@ const insertData = async (prevState: any, formData: FormData) => {
       data: {
         title,
         account,
-        password: encryptingPass,
+        password: await encryptingPass,
         description,
         userid: session.user.id,
         categoryid: category || null,
@@ -147,7 +147,7 @@ const insertData = async (prevState: any, formData: FormData) => {
     if (createAccount) {
       console.log("Data berhasil dibuat:", createAccount);
     }
-  } catch (error: any) {
+  } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       // Tangani error Prisma yang diketahui
       if (error.code === "P2003") {
@@ -180,7 +180,7 @@ const insertData = async (prevState: any, formData: FormData) => {
  *
  * Created By Avaa & Aethyy
  */
-const updateData = async (prevState: any, formData: FormData) => {
+const updateData = async (prevState: unknown, formData: FormData) => {
   const session = await auth();
   if (!session) return null;
   const validatedFields = updateAccountSchema.safeParse(
@@ -205,7 +205,7 @@ const updateData = async (prevState: any, formData: FormData) => {
         title,
         account,
         description,
-        password: encryptPass(password),
+        password: await encryptPass(password),
         categoryid: category || null,
       },
       where: {
@@ -226,7 +226,7 @@ const updateData = async (prevState: any, formData: FormData) => {
     }
   } catch (e) {
     return {
-      message: "gagal 2",
+      message: `gagal 2, ${e}`,
       status: false,
     };
   }
@@ -263,7 +263,7 @@ const deleteData = async ({ id }: { id: string }) => {
     }
   } catch (e) {
     return {
-      message: "gagal 2",
+      message: `gagal 2, ${e}`,
       status: false,
     };
   }

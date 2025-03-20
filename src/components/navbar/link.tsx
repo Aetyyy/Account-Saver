@@ -1,15 +1,16 @@
 import React from "react";
 import ActivePath from "@/components/navbar/path";
+import type { Session } from "next-auth";
 
-export function PageLink({ session }: any) {
+export function PageLink({ session }: { session: Session | null }) {
   return (
     <ul className="hidden md:flex items-center gap-4 mr-5 font-semibold text-navbar-text">
-      <li>
+      {/* <li>
         <ActivePath href={"/"}>Home</ActivePath>
       </li>
       <li>
         <ActivePath href={"/#about"}>About</ActivePath>
-      </li>
+      </li> */}
       {session && (
         <>
           <li>

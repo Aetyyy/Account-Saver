@@ -5,16 +5,13 @@ import { ProfileButton } from "@/components/navbar/profileButton";
 import { PageLink } from "@/components/navbar/link";
 import Image from "next/image";
 import { RxHamburgerMenu } from "react-icons/rx";
-import { AiOutlineHome } from "react-icons/ai";
-import { IoClose, IoInformationCircleOutline } from "react-icons/io5";
-import {
-  MdDashboard,
-  MdOutlineAccountCircle,
-  MdOutlineStorage,
-} from "react-icons/md";
+import { IoClose } from "react-icons/io5";
+import { MdOutlineStorage } from "react-icons/md";
 import { PiUsersDuotone } from "react-icons/pi";
+import type { Session } from "next-auth";
+import { BiCategory } from "react-icons/bi";
 
-export default function DynamicNav({ session }: any) {
+export default function DynamicNav({ session }: { session: Session | null }) {
   const [sidebar, setSidebar] = useState<boolean>(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
@@ -48,8 +45,9 @@ export default function DynamicNav({ session }: any) {
               alt="logo"
               width={1000}
               height={1000}
+              draggable={false}
               priority
-              className="cursor-pointer max-w-12 h-12"
+              className="cursor-pointer max-w-12 h-12 select-none"
             />
             <h1 className="flex flex-none text-lg font-bold text-white">
               Account Saver
@@ -66,13 +64,13 @@ export default function DynamicNav({ session }: any) {
             <>
               <Link
                 href={"/login"}
-                className="hidden sm:block bg-button-light text-white px-4 py-2 rounded-md hover:bg-button-hover transition-colors duration-500"
+                className="hidden sm:block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-500 hover:scale-105 active:bg-blue-600 active:scale-95 transition-transform duration-300"
               >
                 Login
               </Link>
               <Link
                 href={"/register"}
-                className="hidden sm:block bg-[#0056b3] text-white px-4 py-2 rounded-md hover:bg-button-light transition-colors duration-500"
+                className="hidden sm:block bg-blue-800 text-white px-4 py-2 rounded-md hover:bg-blue-700 hover:scale-105 active:bg-blue-800 active:scale-95 transition-transform duration-300"
               >
                 Register
               </Link>
@@ -80,23 +78,30 @@ export default function DynamicNav({ session }: any) {
           )}
         </div>
       </div>
-      {/* {sidebar && ( */}
+      {/* sidebar */}
       <aside
         ref={sidebarRef}
-        className={`${
+        className={`
+        ${
           sidebar ? "translate-x-0" : "-translate-x-full"
-        } absolute mx-auto container z-40 top-0 pb-2 px-4 w-full flex flex-col justify-between h-screen border-r bg-sidebar-dark transition-all duration-700 ease-in-out sm:w-6/12 md:hidden overflow-hidden`}
+        } fixed z-40 top-0 left-0 w-full sm:w-6/12 md:hidden
+        h-screen bg-sidebar-dark-bg border-r
+        flex flex-col justify-between
+        transition-all duration-700 ease-in-out
+      `}
       >
-        <div>
-          <div className="-mx-6 px-6 py-4 border-b-white border-b flex">
+        {/* Bagian Atas (konten scrollable) */}
+        <div className="flex-1 overflow-y-auto">
+          {/* Header Sidebar */}
+          <div className="flex items-center px-6 py-4 border-b border-b-white">
             <button onClick={() => setSidebar(!sidebar)}>
               <IoClose
                 className={`${
                   sidebar ? "rotate-180" : "rotate-0"
-                } w-8 h-8 mr-4 ml-2 md:hidden text-white transition-transform duration-300 ease-in-out`}
+                } w-8 h-8 mr-4 text-white transition-transform duration-300 ease-in-out`}
               />
             </button>
-            <Link href="#" title="home" className="flex flex-none">
+            <Link href="#" title="home" className="flex items-center">
               <Image
                 src="/logo.png"
                 className="w-12"
@@ -105,82 +110,76 @@ export default function DynamicNav({ session }: any) {
                 height={1000}
                 priority
               />
-              <span className="text-white font-bold text-lg pt-3 mx-3 line-clamp-1 text-pretty">
+              <span className="text-white font-bold text-lg ml-3 line-clamp-1">
                 Account Saver
               </span>
             </Link>
           </div>
-          <ul className="space-y-2 tracking-wide mt-8">
-            <li>
-              <Link
-                href="/"
-                aria-label="home"
-                className="relative px-4 py-3 flex items-center space-x-4 rounded-lg text-white bg-gradient-to-r from-sky-600 to-cyan-400"
-              >
-                <AiOutlineHome className="h-6 w-6 text-white" />
-                <span className="-mr-1 font-medium">Home</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="#about"
-                aria-label="about"
-                className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-700 group"
-              >
-                <IoInformationCircleOutline className="h-6 w-6 text-gray-700" />
-                <span className="group-hover:text-gray-700">About</span>
-              </Link>
-            </li>
+
+          {/* Menu Sidebar */}
+          <ul className="space-y-2 tracking-wide mt-6 px-4">
             {session && (
               <>
                 <li>
                   <Link
-                    href="/dashboard"
-                    aria-label="dashboard"
-                    className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-700 group"
-                  >
-                    <MdDashboard className="h-6 w-6 text-gray-700" />
-                    <span className="group-hover:text-gray-700">Dashboard</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/account"
-                    aria-label="account"
-                    className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-700 group"
-                  >
-                    <MdOutlineAccountCircle className="h-6 w-6 text-gray-700" />
-                    <span className="group-hover:text-gray-700">Account</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
                     href="/storage"
                     aria-label="storage"
-                    className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-700 group"
+                    className="px-4 py-3 flex items-center space-x-4 rounded-md text-slate-400 group bg-sidebar-dark-on hover:bg-gray-200 transition-colors"
+                    onClick={() => setSidebar(false)}
                   >
-                    <MdOutlineStorage className="h-6 w-6 text-gray-700" />
-                    <span className="group-hover:text-gray-700">Storage</span>
+                    <MdOutlineStorage className="h-6 w-6 text-slate-400" />
+                    <span>Storage</span>
                   </Link>
                 </li>
-                {session.user.role === "admin" ? (
+                <li>
+                  <Link
+                    href="/category"
+                    aria-label="category"
+                    className="px-4 py-3 flex items-center space-x-4 rounded-md text-slate-400 group bg-sidebar-dark-on hover:bg-gray-200 transition-colors"
+                    onClick={() => setSidebar(false)}
+                  >
+                    <BiCategory className="h-6 w-6 text-slate-400" />
+                    <span>Category</span>
+                  </Link>
+                </li>
+                {session.user.role === "admin" && (
                   <li>
                     <Link
                       href="/user"
                       aria-label="user"
-                      className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-700 group"
+                      className="px-4 py-3 flex items-center space-x-4 rounded-md text-slate-400 group bg-sidebar-dark-on hover:bg-gray-200 transition-colors"
+                      onClick={() => setSidebar(false)}
                     >
-                      <PiUsersDuotone className="h-6 w-6 text-gray-700" />
-                      <span className="group-hover:text-gray-700">Users</span>
+                      <PiUsersDuotone className="h-6 w-6 text-slate-400" />
+                      <span>Users</span>
                     </Link>
                   </li>
-                ) : null}
+                )}
               </>
             )}
           </ul>
         </div>
-        <div className="px-6 -mx-4 pt-4 flex items-center border-t gap-3">
-          {session && <ProfileButton session={session} />}
+
+        {/* Bagian Bawah (tetap terlihat) */}
+        <div className="px-6 py-4 border-t border-gray-200 flex items-center gap-3">
+          {session ? (
+            <ProfileButton session={session} />
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-500 hover:scale-105 active:bg-blue-600 active:scale-95 transition-transform duration-300"
+              >
+                Login
+              </Link>
+              <Link
+                href="/register"
+                className="bg-blue-800 text-white px-4 py-2 rounded-md hover:bg-blue-700 hover:scale-105 active:bg-blue-800 active:scale-95 transition-transform duration-300"
+              >
+                Register
+              </Link>
+            </>
+          )}
         </div>
       </aside>
     </>
