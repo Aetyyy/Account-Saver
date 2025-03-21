@@ -24,8 +24,8 @@ export default function CategoryTableData({
   onToggleSelect,
 }: CategoryTableDataProps) {
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const itemsPerPage = 5;
-  const [inputPage, setInputPage] = useState("");
+  const itemsPerPage: number = 5;
+  const [inputPage, setInputPage] = useState<string>("");
 
   // State untuk menyimpan ID yang dipilih (saat isSelectMode = true)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -280,7 +280,9 @@ export default function CategoryTableData({
                   {(currentPage - 1) * itemsPerPage + index + 1}.
                 </td>
                 <td className="py-3 px-2">{cat.name}</td>
-                <td className="py-3 px-2">{cat.description}</td>
+                <td className="py-3 px-2">
+                  {cat.description || "No Description"}
+                </td>
                 <td className="py-3 px-2 hidden xl:table-cell">
                   {formatDate(cat.createdat.toString())}
                 </td>

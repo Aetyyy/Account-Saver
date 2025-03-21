@@ -1,17 +1,26 @@
 "use client";
+
+import React, { useEffect, useState } from "react";
 import { getData } from "@/lib/account";
-import AccountTableClient from "@/components/storage/accountTableClient";
-import { useEffect, useMemo, useState } from "react";
-import { accountStorage } from "@prisma/client";
 import Loading from "@/components/loading";
+import { accountStorage } from "@prisma/client";
+import AccountTableClient from "@/components/storage/accountTableClient";
 import { MultiValue } from "react-select";
 import { OptionType } from "@/types/option.i";
 
 interface AccountTableProps {
-  category: MultiValue<OptionType>;
+  selectedCategories: MultiValue<OptionType>;
+  isSelectMode: boolean;
+  setSelectMode: React.Dispatch<React.SetStateAction<boolean>>;
+  setAccountCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export default function AccountTable({ category }: AccountTableProps) {
+export default function AccountTable({
+  selectedCategories,
+  isSelectMode,
+  setSelectMode,
+  setAccountCount,
+}: AccountTableProps) {
   const [accountData, setAccountData] = useState<accountStorage[]>([]);
   const [loading, setLoading] = useState(true);
   const [updateData, setUpdateData] = useState(false);
@@ -19,9 +28,10 @@ export default function AccountTable({ category }: AccountTableProps) {
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        const account = await getData();
-        if (account.data) {
-          setAccountData(account.data);
+        const res = await getData();
+        if (res.data) {
+          setAccountData(res.data);
+          setAccountCount(res.data.length);
         }
       } catch (error) {
         console.error("Failed to fetch accounts:", error);
@@ -31,22 +41,18 @@ export default function AccountTable({ category }: AccountTableProps) {
       }
     };
 
-    if (loading || updateData) {
-      fetchAccounts();
-    }
-  }, [loading, updateData]);
+    fetchAccounts();
+  }, [updateData, setAccountCount]);
 
-  const filteredAccounts = useMemo(() => {
-    return category.length
-      ? accountData.filter((acc) =>
-          category.some(
-            (cat) =>
-              acc.categoryid === cat.value ||
-              (cat.value === "No Category" && !acc.categoryid)
-          )
+  const filteredAccounts = selectedCategories.length
+    ? accountData.filter((acc) =>
+        selectedCategories.some(
+          (cat) =>
+            acc.categoryid === cat.value ||
+            (cat.value === "No Category" && !acc.categoryid)
         )
-      : accountData;
-  }, [accountData, category]);
+      )
+    : accountData;
 
   return loading ? (
     <Loading />
@@ -55,12 +61,15 @@ export default function AccountTable({ category }: AccountTableProps) {
       accounts={filteredAccounts}
       setAccountData={setAccountData}
       updateAccount={() => setUpdateData(true)}
+      isSelectMode={isSelectMode}
+      setAccountCount={setAccountCount}
+      setSelectMode={setSelectMode}
     />
   ) : (
     <div className="bg-slate-900/50 py-2 rounded-lg overflow-auto">
-      <table className="w-full ">
+      <table className="w-full">
         <thead className="border-b border-gray-100">
-          <tr className="*:text-white *:py-3 *:px-6 *:text-left *:text-sm">
+          <tr className="*:text-white *:text-left *:text-sm *:px-3 *:py-2">
             <th>No.</th>
             <th>Name</th>
             <th>Account</th>

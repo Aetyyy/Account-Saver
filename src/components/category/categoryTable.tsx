@@ -48,7 +48,7 @@ export default function CategoryTable({
           <tr>
             <td
               className="text-white text-lg font-semibold text-center py-4"
-              colSpan={4}
+              colSpan={5}
             >
               No Category Found
             </td>
