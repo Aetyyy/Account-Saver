@@ -21,7 +21,7 @@ export default function FormLogin() {
   };
 
   return (
-    <form action={formAction}>
+    <form action={formAction} className="mt-4 space-y-2 overflow-hidden">
       {state?.message ? (
         <div
           className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-100"
@@ -30,10 +30,10 @@ export default function FormLogin() {
           <span className="font-medium">{state?.message}</span>
         </div>
       ) : null}
-      <div>
+      <div className="space-y-2">
         <label
           htmlFor="identifier"
-          className="block mb-2 text-sm font-medium text-white"
+          className="block text-sm font-medium text-slate-300"
         >
           Email or Username
         </label>
@@ -44,12 +44,9 @@ export default function FormLogin() {
           placeholder="Enter your email or username"
         />
         <div aria-live="polite" aria-atomic="true">
-          <span className="text-sm text-red-500 mt-2">
+          <span className="text-sm text-red-500">
             {state?.error && (
-              <div
-                className="mb-4 text-sm text-red-500 rounded-lg"
-                role="alert"
-              >
+              <div className="text-sm text-red-500 rounded-lg" role="alert">
                 {state.error.identifier && (
                   <div>
                     {state.error.identifier.map((msg, idx) => (
@@ -61,14 +58,21 @@ export default function FormLogin() {
             )}
           </span>
         </div>
-      </div>
-      <div className="my-4">
-        <label
-          htmlFor="password"
-          className="block mb-2 text-sm font-medium text-white"
-        >
-          Password
-        </label>
+        <div className="flex justify-between items-center gap-2">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-slate-300"
+          >
+            Password
+          </label>
+          <div className="text-xs font-light text-gray-500">
+            <Link href={"/forgot-password"}>
+              <span className="font-medium text-[#007BFF] hover:text-[#0056b3]">
+                Forgot Password?
+              </span>
+            </Link>
+          </div>
+        </div>
         <div className="relative overflow-hidden">
           <input
             type={showPassword ? "text" : "password"}
@@ -122,21 +126,6 @@ export default function FormLogin() {
         </div>
       </div>
       <LoginButton />
-      <div className="mt-1 text-xs font-light text-gray-500">
-        <Link href={"/forgot-password"}>
-          <span className="font-medium text-[#007BFF] hover:text-[#0056b3]">
-            Forgot Password?
-          </span>
-        </Link>
-      </div>
-      <p className="mt-4 text-sm font-light text-slate-300">
-        Dont&apos;t have an account?
-        <Link href={"/register"}>
-          <span className="font-medium pl-1 text-[#007BFF] hover:text-[#0056b3]">
-            Sign Up here
-          </span>
-        </Link>
-      </p>
     </form>
   );
 }

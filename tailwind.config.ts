@@ -34,6 +34,7 @@ const config: Config = {
           dark: {
             bg: "rgba(15, 23, 42)",
             on: "rgba(22, 35, 64)",
+            hover: "rgba(29, 47, 88)",
           },
           white: {
             bg: "#FFFFFF",

@@ -3,12 +3,12 @@
 import { forgotPassword } from "@/lib/action";
 import { ForgotPasswordButton } from "@/components/buttons";
 import { FormEvent, useState } from "react";
-import { Email } from "@/types/forgot.i";
+// import { Email } from "@/types/forgot.i";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 
 export default function FormForgotPassword() {
-  const [, setState] = useState<Email>();
+  // const [, setState] = useState<Email>();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const router = useRouter();
 
@@ -21,7 +21,7 @@ export default function FormForgotPassword() {
       const data = await forgotPassword(null, formData);
 
       if (data.status === 404) {
-        setState(data as Email);
+        // setState(data as Email);
         await Swal.fire({
           title: "Error",
           text: "Email not found or using another provider.",
@@ -31,7 +31,7 @@ export default function FormForgotPassword() {
           allowEnterKey: false,
         });
       } else if (data.status === 200) {
-        setState(data as Email);
+        // setState(data as Email);
 
         try {
           await fetch("/api/pwreset", {

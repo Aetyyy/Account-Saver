@@ -6,7 +6,10 @@ const disablePage = ["/login", "/register", "/forgot-password"];
 
 export default function Footer() {
   const pathname = usePathname();
-  if (disablePage.includes(pathname)) {
+  if (
+    ["/login", "/register"].includes(pathname) ||
+    pathname.startsWith("/forgot-password")
+  ) {
     return null;
   }
 

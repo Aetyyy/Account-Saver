@@ -21,7 +21,7 @@ export const LoginButton = () => {
     <button
       type="submit"
       disabled={pending}
-      className="w-full text-white bg-[#007BFF] font-medium rounded-lg px-5 py-1.5 text-center uppercase transition-colors duration-700 hover:bg-[#0056b3]"
+      className="w-full text-white bg-[#007BFF] active:bg-[#007BFF] font-medium rounded-lg px-5 py-1.5 text-center uppercase transition-all duration-300 hover:bg-[#0056b3]"
     >
       {pending ? "Logging in..." : "Login"}
     </button>

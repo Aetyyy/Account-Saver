@@ -4,7 +4,7 @@ import { RevealLRLR } from "@/components/animations/reveal";
 
 export default function page() {
   return (
-    <section className="mt-16 mx-auto container px-8 lg:px-24 text-pretty">
+    <section className="my-16 mx-auto container px-8 lg:px-24 text-pretty">
       <RevealLRLR>
         <h1 className="text-center text-white font-extrabold font-sans text-5xl my-6">
           Privacy Policy

@@ -93,6 +93,7 @@ export default function ModalForm({
   return (
     <form
       id="categoryForm"
+      autoComplete="off"
       onSubmit={handleSubmit}
       className={`fixed inset-0 z-50 flex items-center justify-center transition-all duration-300 ease-in-out ${
         isOpen ? "visible bg-black/30" : "invisible"
@@ -119,9 +120,10 @@ export default function ModalForm({
               Category Name
             </label>
             <input
-              name="name"
-              id="name"
               type="text"
+              id="name"
+              name="name"
+              minLength={3}
               value={formData.name || ""}
               onChange={handleInputChange}
               placeholder="Enter category name"
@@ -138,8 +140,8 @@ export default function ModalForm({
               Description
             </label>
             <textarea
-              name="description"
               id="description"
+              name="description"
               rows={2}
               value={formData.description || ""}
               onChange={handleInputChange}

@@ -11,7 +11,7 @@ export const GoogleButton = () => {
     >
       <button
         type="submit"
-        className="flex items-center justify-center gap-1 py-2.5 rounded-lg uppercase text-white font-medium text-sm bg-blue-500 w-full"
+        className="flex items-center justify-center gap-1 py-2.5 rounded-lg text-white font-medium text-sm bg-blue-500 hover:bg-blue-600 transition-colors duration-300 w-full"
       >
         <IoLogoGoogle />
         Sign in with Google
@@ -30,7 +30,7 @@ export const GithubButton = () => {
     >
       <button
         type="submit"
-        className="flex items-center justify-center gap-1 py-2.5 rounded-lg uppercase text-white font-medium text-sm bg-gray-500 w-full"
+        className="flex items-center justify-center gap-1 py-2.5 rounded-lg text-white font-medium text-sm bg-gray-500 hover:bg-gray-600 transition-colors duration-300 w-full"
       >
         <IoLogoGithub />
         Sign in with Github

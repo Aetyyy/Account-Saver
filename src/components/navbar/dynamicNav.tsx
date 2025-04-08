@@ -5,11 +5,13 @@ import { ProfileButton } from "@/components/navbar/profileButton";
 import { PageLink } from "@/components/navbar/link";
 import Image from "next/image";
 import { RxHamburgerMenu } from "react-icons/rx";
-import { IoClose } from "react-icons/io5";
+import { IoClose, IoLogIn } from "react-icons/io5";
 import { MdOutlineStorage } from "react-icons/md";
 import { PiUsersDuotone } from "react-icons/pi";
 import type { Session } from "next-auth";
 import { BiCategory } from "react-icons/bi";
+import { AiOutlineUsergroupAdd } from "react-icons/ai";
+import { SidePath } from "@/components/navbar/path";
 
 export default function DynamicNav({ session }: { session: Session | null }) {
   const [sidebar, setSidebar] = useState<boolean>(false);
@@ -85,7 +87,7 @@ export default function DynamicNav({ session }: { session: Session | null }) {
         ${
           sidebar ? "translate-x-0" : "-translate-x-full"
         } fixed z-40 top-0 left-0 w-full sm:w-6/12 md:hidden
-        h-screen bg-sidebar-dark-bg border-r
+        min-h-screen bg-sidebar-dark-bg border-r
         flex flex-col justify-between
         transition-all duration-700 ease-in-out
       `}
@@ -117,70 +119,77 @@ export default function DynamicNav({ session }: { session: Session | null }) {
           </div>
 
           {/* Menu Sidebar */}
-          <ul className="space-y-2 tracking-wide mt-6 px-4">
-            {session && (
+          <ul className="space-y-4 tracking-wide mt-6 px-4">
+            {session ? (
               <>
                 <li>
-                  <Link
+                  <SidePath
                     href="/storage"
                     aria-label="storage"
-                    className="px-4 py-3 flex items-center space-x-4 rounded-md text-slate-400 group bg-sidebar-dark-on hover:bg-gray-200 transition-colors"
-                    onClick={() => setSidebar(false)}
+                    Sidebar={() => setSidebar(false)}
                   >
-                    <MdOutlineStorage className="h-6 w-6 text-slate-400" />
-                    <span>Storage</span>
-                  </Link>
+                    <MdOutlineStorage className="h-6 w-6 group-hover:text-white" />
+                    <span className="font-semibold group-hover:text-white">
+                      Storage
+                    </span>
+                  </SidePath>
                 </li>
                 <li>
-                  <Link
+                  <SidePath
                     href="/category"
                     aria-label="category"
-                    className="px-4 py-3 flex items-center space-x-4 rounded-md text-slate-400 group bg-sidebar-dark-on hover:bg-gray-200 transition-colors"
-                    onClick={() => setSidebar(false)}
+                    Sidebar={() => setSidebar(false)}
                   >
-                    <BiCategory className="h-6 w-6 text-slate-400" />
-                    <span>Category</span>
-                  </Link>
+                    <BiCategory className="h-6 w-6 group-hover:text-white" />
+                    <span className="font-semibold group-hover:text-white">
+                      Category
+                    </span>
+                  </SidePath>
                 </li>
                 {session.user.role === "admin" && (
                   <li>
-                    <Link
+                    <SidePath
                       href="/user"
                       aria-label="user"
-                      className="px-4 py-3 flex items-center space-x-4 rounded-md text-slate-400 group bg-sidebar-dark-on hover:bg-gray-200 transition-colors"
-                      onClick={() => setSidebar(false)}
+                      Sidebar={() => setSidebar(false)}
                     >
-                      <PiUsersDuotone className="h-6 w-6 text-slate-400" />
-                      <span>Users</span>
-                    </Link>
+                      <PiUsersDuotone className="h-6 w-6 text-slate-400 group-hover:text-white" />
+                      <span className="font-semibold group-hover:text-white">
+                        Users
+                      </span>
+                    </SidePath>
                   </li>
                 )}
+              </>
+            ) : (
+              <>
+                <li>
+                  <SidePath href="/login" Sidebar={() => setSidebar(false)}>
+                    <IoLogIn className="h-6 w-6 text-slate-400 group-hover:text-white" />
+                    <span className="font-semibold group-hover:text-white">
+                      Login
+                    </span>
+                  </SidePath>
+                </li>
+                <li>
+                  <SidePath href="/register" Sidebar={() => setSidebar(false)}>
+                    <AiOutlineUsergroupAdd className="h-6 w-6 text-slate-400 group-hover:text-white" />
+                    <span className="font-semibold group-hover:text-white">
+                      Register
+                    </span>
+                  </SidePath>
+                </li>
               </>
             )}
           </ul>
         </div>
 
         {/* Bagian Bawah (tetap terlihat) */}
-        <div className="px-6 py-4 border-t border-gray-200 flex items-center gap-3">
-          {session ? (
+        {session && (
+          <div className="px-6 py-4 border-t border-gray-200 flex items-center gap-3">
             <ProfileButton session={session} />
-          ) : (
-            <>
-              <Link
-                href="/login"
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-500 hover:scale-105 active:bg-blue-600 active:scale-95 transition-transform duration-300"
-              >
-                Login
-              </Link>
-              <Link
-                href="/register"
-                className="bg-blue-800 text-white px-4 py-2 rounded-md hover:bg-blue-700 hover:scale-105 active:bg-blue-800 active:scale-95 transition-transform duration-300"
-              >
-                Register
-              </Link>
-            </>
-          )}
-        </div>
+          </div>
+        )}
       </aside>
     </>
   );

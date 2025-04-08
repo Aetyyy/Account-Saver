@@ -11,5 +11,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <div className="">{children}</div>;
+  return (
+    <div className="bg-slate-800 min-h-screen flex flex-col items-center justify-center px-4">
+      <div className="w-full max-w-md bg-slate-900/50 rounded-lg shadow-xl">
+        {children}
+      </div>
+    </div>
+  );
 }
