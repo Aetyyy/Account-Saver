@@ -2,7 +2,6 @@
 
 import React from "react";
 import { usePathname } from "next/navigation";
-const disablePage = ["/login", "/register", "/forgot-password"];
 
 export default function Footer() {
   const pathname = usePathname();
